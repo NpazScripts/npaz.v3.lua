@@ -1,0 +1,391 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+ 
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+ 
+-- ==================== GUI ====================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DivineHubInterface"
+ScreenGui.Parent = playerGui
+ScreenGui.ResetOnSpawn = false
+ 
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 560, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -280, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 6)
+ 
+-- SIDEBAR
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 160, 1, 0)
+Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Sidebar.BorderSizePixel = 0
+Sidebar.ClipsDescendants = true
+Sidebar.Parent = MainFrame
+Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 6)
+ 
+local BigD = Instance.new("TextLabel")
+BigD.Size = UDim2.new(0, 140, 0, 150)
+BigD.Position = UDim2.new(0.5, -70, 0, 20)
+BigD.BackgroundTransparency = 1
+BigD.Text = "D"
+BigD.Font = Enum.Font.GothamBlack
+BigD.TextSize = 160
+BigD.TextColor3 = Color3.fromRGB(14, 14, 14)
+BigD.Parent = Sidebar
+local dStroke = Instance.new("UIStroke", BigD)
+dStroke.Thickness = 6
+dStroke.Color = Color3.fromRGB(255, 255, 255)
+ 
+local DivineText = Instance.new("TextLabel")
+DivineText.Size = UDim2.new(1, 0, 0, 30)
+DivineText.Position = UDim2.new(0, 0, 0, 160)
+DivineText.BackgroundTransparency = 1
+DivineText.Text = "divine hub"
+DivineText.Font = Enum.Font.GothamBold
+DivineText.TextSize = 22
+DivineText.TextColor3 = Color3.fromRGB(255, 255, 255)
+DivineText.Parent = Sidebar
+ 
+local Divider = Instance.new("Frame")
+Divider.Size = UDim2.new(0, 1, 1, 0)
+Divider.Position = UDim2.new(1, 0, 0, 0)
+Divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Divider.Parent = Sidebar
+ 
+local LogoLabel = Instance.new("TextLabel")
+LogoLabel.Size = UDim2.new(1, -20, 0, 18)
+LogoLabel.Position = UDim2.new(0, 12, 1, -46)
+LogoLabel.Text = "divine hub"
+LogoLabel.Font = Enum.Font.GothamBold
+LogoLabel.TextSize = 12
+LogoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoLabel.BackgroundTransparency = 1
+LogoLabel.Parent = Sidebar
+ 
+local SubLabel = Instance.new("TextLabel")
+SubLabel.Size = UDim2.new(1, -20, 0, 14)
+SubLabel.Position = UDim2.new(0, 12, 1, -27)
+SubLabel.Text = "best duel paid"
+SubLabel.Font = Enum.Font.Gotham
+SubLabel.TextSize = 9
+SubLabel.TextColor3 = Color3.fromRGB(60, 60, 60)
+SubLabel.BackgroundTransparency = 1
+SubLabel.Parent = Sidebar
+ 
+local HintLabel = Instance.new("TextLabel")
+HintLabel.Size = UDim2.new(0, 180, 0, 16)
+HintLabel.Position = UDim2.new(1, -195, 0, 10)
+HintLabel.BackgroundTransparency = 1
+HintLabel.Text = "LCTRL — toggle panel"
+HintLabel.Font = Enum.Font.Code
+HintLabel.TextSize = 9
+HintLabel.TextColor3 = Color3.fromRGB(50, 50, 50)
+HintLabel.Parent = MainFrame
+ 
+-- NAV (só um botão: menu)
+local NavContainer = Instance.new("Frame")
+NavContainer.Size = UDim2.new(0, 110, 1, -20)
+NavContainer.Position = UDim2.new(0, 175, 0, 10)
+NavContainer.BackgroundTransparency = 1
+NavContainer.Parent = MainFrame
+local NavLayout = Instance.new("UIListLayout", NavContainer)
+NavLayout.Padding = UDim.new(0, 6)
+NavLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ 
+local menuBtn = Instance.new("TextButton")
+menuBtn.Size = UDim2.new(1, 0, 0, 34)
+menuBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+menuBtn.Text = "menu"
+menuBtn.Font = Enum.Font.GothamMedium
+menuBtn.TextSize = 10
+menuBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+menuBtn.LayoutOrder = 1
+menuBtn.Parent = NavContainer
+Instance.new("UICorner", menuBtn).CornerRadius = UDim.new(0, 4)
+local mbs = Instance.new("UIStroke", menuBtn)
+mbs.Thickness = 1
+mbs.Color = Color3.fromRGB(200, 200, 200)
+ 
+local ContentPanel = Instance.new("Frame")
+ContentPanel.Size = UDim2.new(1, -300, 1, -20)
+ContentPanel.Position = UDim2.new(0, 295, 0, 10)
+ContentPanel.BackgroundTransparency = 1
+ContentPanel.Parent = MainFrame
+ 
+local CategoryTitle = Instance.new("TextLabel")
+CategoryTitle.Size = UDim2.new(1, 0, 0, 20)
+CategoryTitle.Text = "menu"
+CategoryTitle.Font = Enum.Font.GothamBold
+CategoryTitle.TextSize = 11
+CategoryTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+CategoryTitle.BackgroundTransparency = 1
+CategoryTitle.Parent = ContentPanel
+ 
+-- ==================== FRAME MENU ÚNICO ====================
+local MenuFrame = Instance.new("Frame")
+MenuFrame.Name = "MenuFrame"
+MenuFrame.Size = UDim2.new(1, -10, 1, -35)
+MenuFrame.Position = UDim2.new(0, 5, 0, 28)
+MenuFrame.BackgroundTransparency = 1
+MenuFrame.Visible = true
+MenuFrame.Parent = ContentPanel
+ 
+-- ==================== SISTEMA DE KEYBIND GLOBAL ====================
+local rebindTarget = nil
+ 
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
+    local key = input.KeyCode
+ 
+    -- Toggle painel com LeftControl
+    if key == Enum.KeyCode.LeftControl then
+        if rebindTarget then
+            rebindTarget.KeyBtn.Text = tostring(rebindTarget.boundKey):gsub("Enum.KeyCode.", "")
+            rebindTarget.KeyBadge.Text = rebindTarget.KeyBtn.Text
+            rebindTarget.KeyBtn.TextColor3 = Color3.fromRGB(100, 100, 100)
+            rebindTarget.KbStroke.Color = Color3.fromRGB(50, 50, 50)
+            rebindTarget = nil
+        end
+        return
+    end
+ 
+    -- Atribui tecla ao card em modo rebind
+    if rebindTarget then
+        local keyName = tostring(key):gsub("Enum.KeyCode.", "")
+        rebindTarget.boundKey = key
+        rebindTarget.KeyBtn.Text = keyName
+        rebindTarget.KeyBadge.Text = keyName
+        rebindTarget.KeyBtn.TextColor3 = Color3.fromRGB(100, 100, 100)
+        rebindTarget.KbStroke.Color = Color3.fromRGB(50, 50, 50)
+        rebindTarget = nil
+        return
+    end
+end)
+ 
+-- ==================== TOGGLE CARD ====================
+local function MakeToggleCard(parent, yPos, featureName, defaultKey, onEnable, onDisable)
+    local tweenInfo = TweenInfo.new(0.18, Enum.EasingStyle.Quad)
+ 
+    local state = {
+        boundKey = Enum.KeyCode[defaultKey] or Enum.KeyCode.V,
+        active = false,
+        KeyBtn = nil,
+        KeyBadge = nil,
+        KbStroke = nil,
+    }
+ 
+    local Card = Instance.new("Frame")
+    Card.Size = UDim2.new(1, -10, 0, 64)
+    Card.Position = UDim2.new(0, 5, 0, yPos)
+    Card.BackgroundColor3 = Color3.fromRGB(17, 17, 17)
+    Card.BorderSizePixel = 0
+    Card.Name = featureName .. "Card"
+    Card.Parent = parent
+    Instance.new("UICorner", Card).CornerRadius = UDim.new(0, 8)
+    local CardStroke = Instance.new("UIStroke", Card)
+    CardStroke.Color = Color3.fromRGB(42, 0, 0)
+    CardStroke.Thickness = 1
+ 
+    local NameLabel = Instance.new("TextLabel")
+    NameLabel.Size = UDim2.new(0.55, 0, 0, 22)
+    NameLabel.Position = UDim2.new(0, 14, 0.5, -20)
+    NameLabel.BackgroundTransparency = 1
+    NameLabel.Text = featureName
+    NameLabel.Font = Enum.Font.GothamBold
+    NameLabel.TextSize = 14
+    NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    NameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    NameLabel.Parent = Card
+ 
+    local KeyBadge = Instance.new("TextLabel")
+    KeyBadge.Size = UDim2.new(0, 26, 0, 16)
+    KeyBadge.Position = UDim2.new(0, 14 + #featureName * 8 + 6, 0.5, -20)
+    KeyBadge.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    KeyBadge.Text = defaultKey
+    KeyBadge.Font = Enum.Font.Code
+    KeyBadge.TextSize = 10
+    KeyBadge.TextColor3 = Color3.fromRGB(130, 130, 130)
+    KeyBadge.TextXAlignment = Enum.TextXAlignment.Center
+    KeyBadge.Parent = Card
+    Instance.new("UICorner", KeyBadge).CornerRadius = UDim.new(0, 3)
+    Instance.new("UIStroke", KeyBadge).Color = Color3.fromRGB(60, 60, 60)
+    state.KeyBadge = KeyBadge
+ 
+    local StatusLabel = Instance.new("TextLabel")
+    StatusLabel.Size = UDim2.new(0.55, 0, 0, 16)
+    StatusLabel.Position = UDim2.new(0, 14, 0.5, 4)
+    StatusLabel.BackgroundTransparency = 1
+    StatusLabel.Text = "disabled"
+    StatusLabel.Font = Enum.Font.Gotham
+    StatusLabel.TextSize = 11
+    StatusLabel.TextColor3 = Color3.fromRGB(100, 0, 0)
+    StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    StatusLabel.Parent = Card
+ 
+    local KeyBtn = Instance.new("TextButton")
+    KeyBtn.Size = UDim2.new(0, 34, 0, 22)
+    KeyBtn.Position = UDim2.new(1, -94, 0.5, -11)
+    KeyBtn.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+    KeyBtn.Text = defaultKey
+    KeyBtn.Font = Enum.Font.Code
+    KeyBtn.TextSize = 10
+    KeyBtn.TextColor3 = Color3.fromRGB(100, 100, 100)
+    KeyBtn.Parent = Card
+    Instance.new("UICorner", KeyBtn).CornerRadius = UDim.new(0, 4)
+    local KbStroke = Instance.new("UIStroke", KeyBtn)
+    KbStroke.Color = Color3.fromRGB(50, 50, 50)
+    state.KeyBtn = KeyBtn
+    state.KbStroke = KbStroke
+ 
+    local ToggleBg = Instance.new("Frame")
+    ToggleBg.Size = UDim2.new(0, 52, 0, 28)
+    ToggleBg.Position = UDim2.new(1, -58, 0.5, -14)
+    ToggleBg.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    ToggleBg.BorderSizePixel = 0
+    ToggleBg.Parent = Card
+    Instance.new("UICorner", ToggleBg).CornerRadius = UDim.new(1, 0)
+    local TBStroke = Instance.new("UIStroke", ToggleBg)
+    TBStroke.Color = Color3.fromRGB(50, 50, 50)
+    TBStroke.Thickness = 1
+ 
+    local Knob = Instance.new("Frame")
+    Knob.Size = UDim2.new(0, 20, 0, 20)
+    Knob.Position = UDim2.new(0, 4, 0.5, -10)
+    Knob.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    Knob.BorderSizePixel = 0
+    Knob.Parent = ToggleBg
+    Instance.new("UICorner", Knob).CornerRadius = UDim.new(1, 0)
+ 
+    local ToggleBtn = Instance.new("TextButton")
+    ToggleBtn.Size = UDim2.new(0, 52, 0, 28)
+    ToggleBtn.Position = UDim2.new(1, -58, 0.5, -14)
+    ToggleBtn.BackgroundTransparency = 1
+    ToggleBtn.Text = ""
+    ToggleBtn.ZIndex = 5
+    ToggleBtn.Parent = Card
+ 
+    local function setActive(val)
+        state.active = val
+        if val then
+            StatusLabel.Text = "enabled"
+            StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TweenService:Create(CardStroke, tweenInfo, {Color = Color3.fromRGB(80, 80, 80)}):Play()
+            TweenService:Create(ToggleBg, tweenInfo, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+            TweenService:Create(Knob, tweenInfo, {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+            TweenService:Create(Knob, tweenInfo, {Position = UDim2.new(0, 28, 0.5, -10)}):Play()
+            if onEnable then onEnable() end
+        else
+            StatusLabel.Text = "disabled"
+            StatusLabel.TextColor3 = Color3.fromRGB(100, 0, 0)
+            TweenService:Create(CardStroke, tweenInfo, {Color = Color3.fromRGB(42, 0, 0)}):Play()
+            TweenService:Create(ToggleBg, tweenInfo, {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
+            TweenService:Create(Knob, tweenInfo, {BackgroundColor3 = Color3.fromRGB(80, 80, 80)}):Play()
+            TweenService:Create(Knob, tweenInfo, {Position = UDim2.new(0, 4, 0.5, -10)}):Play()
+            if onDisable then onDisable() end
+        end
+    end
+ 
+    ToggleBtn.MouseButton1Click:Connect(function()
+        setActive(not state.active)
+    end)
+ 
+    KeyBtn.MouseButton1Click:Connect(function()
+        rebindTarget = state
+        KeyBtn.Text = "..."
+        KeyBadge.Text = "..."
+        KeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        KbStroke.Color = Color3.fromRGB(200, 200, 200)
+    end)
+ 
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
+        if rebindTarget == nil and input.KeyCode == state.boundKey then
+            setActive(not state.active)
+        end
+    end)
+ 
+    return setActive
+end
+ 
+-- ==================== ANTI BAT ====================
+local antibatconn = nil
+ 
+local function startantibat()
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    if antibatconn then antibatconn:Disconnect() end
+    antibatconn = RunService.Heartbeat:Connect(function()
+        if not root or not root.Parent then return end
+        local orig = root.Velocity
+        root.Velocity = Vector3.new(1000, root.Velocity.Y, 1000)
+        RunService.RenderStepped:Wait()
+        root.Velocity = orig
+    end)
+end
+ 
+local function stopantibat()
+    if antibatconn then antibatconn:Disconnect(); antibatconn = nil end
+end
+ 
+-- Anti Bat: yPos 0
+MakeToggleCard(MenuFrame, 0, "Anti Bat", "V", startantibat, stopantibat)
+ 
+-- ==================== INF JUMP ====================
+local infJumpEnabled = false
+ 
+UserInputService.JumpRequest:Connect(function()
+    if not infJumpEnabled then return end
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if root then
+        root.Velocity = Vector3.new(root.Velocity.X, 55, root.Velocity.Z)
+    end
+end)
+ 
+RunService.Heartbeat:Connect(function()
+    if not infJumpEnabled then return end
+    local char = player.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if root and root.Velocity.Y < -120 then
+        root.Velocity = Vector3.new(root.Velocity.X, -120, root.Velocity.Z)
+    end
+end)
+ 
+-- Inf Jump: yPos 72 (64 do card + 8 de gap)
+MakeToggleCard(MenuFrame, 72, "Inf Jump", "B",
+    function() infJumpEnabled = true  end,
+    function() infJumpEnabled = false end
+)
+ 
+-- ==================== LEFT CTRL — TOGGLE PAINEL ====================
+local panelVisible = true
+local panelTween = TweenInfo.new(0.2, Enum.EasingStyle.Quad)
+ 
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+        panelVisible = not panelVisible
+        if panelVisible then
+            MainFrame.Visible = true
+            TweenService:Create(MainFrame, panelTween, {Size = UDim2.new(0, 560, 0, 420)}):Play()
+        else
+            local t = TweenService:Create(MainFrame, panelTween, {Size = UDim2.new(0, 560, 0, 0)})
+            t:Play()
+            t.Completed:Connect(function()
+                if not panelVisible then MainFrame.Visible = false end
+            end)
+        end
+    end
+end)
+ 
